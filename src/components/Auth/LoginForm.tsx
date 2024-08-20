@@ -57,8 +57,8 @@ const LoginForm: React.FC = () => {
             message: "Password must not be empty!",
           },
           {
-            min: 8,
-            message: "Password must be at least 8 characters!",
+            min: 6,
+            message: "Password must be at least 6 characters!",
           },
         ]}
       >

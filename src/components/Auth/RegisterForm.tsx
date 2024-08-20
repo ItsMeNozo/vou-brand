@@ -66,8 +66,8 @@ const RegisterForm: React.FC = () => {
             message: "Password must not be empty!",
           },
           {
-            min: 8,
-            message: "Password must be at least 8 characters!",
+            min: 6,
+            message: "Password must be at least 6 characters!",
           },
         ]}
       >
@@ -89,8 +89,8 @@ const RegisterForm: React.FC = () => {
             message: "Password confirm must not be empty!",
           },
           {
-            min: 8,
-            message: "Password must be at least 8 characters!",
+            min: 6,
+            message: "Password must be at least 6 characters!",
           },
           ({ getFieldValue }) => ({
             validator(_, value) {
@@ -152,48 +152,6 @@ const RegisterForm: React.FC = () => {
         />
       </Form.Item>
 
-      <Form.Item
-        label="Latitude"
-        name="latitude"
-        labelCol={{ span: 24 }}
-        wrapperCol={{ span: 24 }}
-        rules={[{ required: true, message: "Latitude must not be empty!" }]}
-      >
-        <Input
-          className={`mb-3 ${styles["input-style"]}`}
-          placeholder="Enter latitude"
-        />
-      </Form.Item>
-
-      <Form.Item
-        label="Longitude"
-        name="longitude"
-        labelCol={{ span: 24 }}
-        wrapperCol={{ span: 24 }}
-        rules={[{ required: true, message: "Longitude must not be empty!" }]}
-      >
-        <Input
-          className={`mb-3 ${styles["input-style"]}`}
-          placeholder="Enter longitude"
-        />
-      </Form.Item>
-
-      <Form.Item
-        label="Status"
-        name="status"
-        labelCol={{ span: 24 }}
-        wrapperCol={{ span: 24 }}
-        rules={[{ required: true, message: "Status must not be empty!" }]}
-      >
-        <Select
-          className={`!mb-1.5 ${styles["input-style"]}`}
-          placeholder="Select status"
-        >
-          <Option value="active">Active</Option>
-          <Option value="inactive">Inactive</Option>
-        </Select>
-      </Form.Item>
-
       {/* Submit Button */}
       <Form.Item>
         <Button type="primary" htmlType="submit" className="!mt-6 !h-11" block>
@@ -202,7 +160,8 @@ const RegisterForm: React.FC = () => {
       </Form.Item>
 
       <div style={{ display: "flex", justifyContent: "center", gap: "small" }}>
-        <span>Already have an account? </span>
+        <span className="mr-2">Already have an account? </span>
+
         <span
           style={{ fontWeight: "600", cursor: "pointer" }}
           onClick={() => navigate("/auth/login", { replace: true })}
