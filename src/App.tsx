@@ -1,33 +1,54 @@
 import { RouterProvider, Outlet, createBrowserRouter } from "react-router-dom";
 import "./App.css";
-import TestPage from "./pages/TestPage/TestPage";
+
+// Layouts
 import DashboardLayout from './layouts/DashboardLayout';
 import AuthLayout from "./layouts/AuthLayout";
+
+// Authentication Pages
 import LoginPage from "./pages/Login/Login";
 import RegisterPage from "./pages/SignUp/SignUp";
-import CreateEventPage from "./pages/CreateEventPage/CreateEventPage"; // Import the CreateEventPage component
-import DashboardPage from './pages/Dashboard/DashboardPage'; // Import the DashboardPage component
 
-const Layout = () => {
+// Dashboard Pages
+import DashboardPage from './pages/Dashboard/DashboardPage';
+
+// Brand Management Pages
+import BrandInfoPage from "./pages/Brand/BrandInfoPage"; // Import Brand List Page
+
+// Event Management Pages
+import EventListPage from "./pages/Event/EventListPage"; // Import Event List Page
+import CreateEventPage from "./pages/Event/CreateEventPage"; // Import Create Event Page
+import EventDetailPage from "./pages/Event/EventDetailPage"; // Import Event Detail Page
+import EventUpdatePage from "./pages/Event/EventUpdatePage";
+// Voucher Management Pages
+import VoucherListPage from "./pages/Voucher/VoucherListPage"; // Import Voucher List Page
+import VoucherDetailPage from "./pages/Voucher/VoucherDetailPage"; // Import Voucher Detail Page
+// Statistics Page
+import StatisticsPage from "./pages/Statistics/StatisticsPage";  // Import the StatisticsPage component
+import SearchEventPage from "./pages/Event/SearcheventPage";
+
+
+// Root Layout
+const RootLayout = () => {
   return (
     <>
       <Outlet />
-      {/* <Navbar /> */}
     </>
   );
 };
 
+// Router Configuration
 const router = createBrowserRouter([
   {
     path: '/',
     element: <AuthLayout />,
     children: [
       {
-        path: 'login',
+        path: 'auth/login',
         element: <LoginPage />,
       },
       {
-        path: 'register',
+        path: 'auth/register',
         element: <RegisterPage />,
       },
     ],
@@ -37,13 +58,46 @@ const router = createBrowserRouter([
     element: <DashboardLayout />,
     children: [
       {
-        path: 'page',
-        element: <DashboardPage />, // Add the DashboardPage component
+        path: '',
+        element: <DashboardPage />,
       },
       {
-        path: 'events',
-        element: <CreateEventPage />,
+        path: 'brands',
+        element: <BrandInfoPage/>, // List of brands
       },
+     
+      {
+        path: 'events',
+        element: <EventListPage />, // List of events
+      },
+      {
+        path: 'events/create',
+        element: <CreateEventPage />, // Create new event
+      },
+      {
+        path: 'events/:eventId',
+        element: <EventDetailPage />, // Event detail view
+      },
+      {
+        path: 'events/update/:eventId',
+        element: <EventUpdatePage />,
+      },
+      {
+        path: 'vouchers',
+        element: <VoucherListPage />, // List of vouchers
+      },
+      {
+        path: 'vouchers/:voucherId',
+        element: <VoucherDetailPage />, // Voucher detail view
+      },
+      {
+        path: 'statistics',
+        element: <StatisticsPage />,  // Add the StatisticsPage route
+      },
+      {
+        path: 'events/search',
+        element: <SearchEventPage />,  // Add the StatisticsPage route
+      }
       
     ],
   },

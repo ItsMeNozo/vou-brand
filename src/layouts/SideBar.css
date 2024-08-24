@@ -1,45 +1,54 @@
 .sidebar {
-    width: 250px;
-    height: 100vh;
-    background-color: #2c3e50;
-    color: white;
-    padding-top: 20px;
-    position: fixed;
-    top: 0;
-    left: 0;
-  }
-  
-  .sidebar .logo {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .sidebar .logo img {
-    width: 150px;
-  }
-  
-  .sidebar ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .sidebar ul li {
-    padding: 15px 20px;
-    transition: background-color 0.2s;
-  }
-  
-  .sidebar ul li:hover {
-    background-color: #34495e;
-  }
-  
-  .sidebar ul li a {
-    color: white;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-  }
-  
-  .sidebar ul li a .fa-icon {
-    margin-right: 10px;
-  }
-  
+  width: 250px;
+  height: 100vh;
+  background-color: #2c3e50;
+  color: white;
+  padding-top: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.sidebar .logo {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.sidebar .logo img {
+  width: 80px;
+  height: auto; /* Maintain aspect ratio */
+  transition: transform 0.2s ease-in-out;
+}
+
+.sidebar .logo img:hover {
+  transform: scale(1.05); /* Optional hover effect */
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  padding: 15px 20px;
+  transition: background-color 0.2s;
+}
+
+.sidebar ul li:hover {
+  background-color: #34495e;
+}
+
+.sidebar ul li.active, .sidebar ul li.active:hover {
+  background-color: #1abc9c; /* Optional: Active link color */
+}
+
+.sidebar ul li a {
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+.sidebar ul li a .fa-icon {
+  margin-right: 10px;
+}

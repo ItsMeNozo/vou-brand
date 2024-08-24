@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Form, Input, Typography, DatePicker, Upload } from "antd";
+import { Button, Form, Input, Typography, DatePicker, Upload, InputNumber, notification } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import styles from "./CreateEventForm.module.css";
@@ -14,8 +14,19 @@ const CreateEventForm: React.FC = () => {
     console.log("Failed:", errorInfo);
   };
 
-  const onFinish = async (values: unknown) => {
-    console.log(values);
+  const onFinish = async (values: Record<string, any>) => {
+    console.log("Form Values:", values);
+    // Trigger notification
+    notification.success({
+      message: "Event Created",
+      description: `The event "${values.eventName}" was successfully created.`,
+      placement: "topRight",
+    });
+
+    // Redirect to the Event List page after a short delay
+    setTimeout(() => {
+      navigate('/dashboard/events');
+    }, 500);
   };
 
   return (
@@ -63,13 +74,13 @@ const CreateEventForm: React.FC = () => {
         wrapperCol={{ span: 24 }}
         rules={[
           { required: true, message: "Voucher amount must not be empty!" },
-          { type: "number", message: "Voucher amount is invalid!" },
         ]}
       >
-        <Input
-          type="number"
+        <InputNumber
           className={`mb-1.5 ${styles["input-style"]}`}
           placeholder="Enter voucher amount"
+          min={0}
+          style={{ width: '100%' }}
         />
       </Form.Item>
 

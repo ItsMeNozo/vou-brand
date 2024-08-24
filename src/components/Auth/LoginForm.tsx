@@ -81,7 +81,7 @@ const LoginForm: React.FC = () => {
       </Form.Item>
 
       <Form.Item>
-        <Button
+        <Button onClick={()=>navigate("/dashboard")}
           type="primary"
           htmlType="submit"
           className={`${styles["btn-style"]} justify-center"`}
