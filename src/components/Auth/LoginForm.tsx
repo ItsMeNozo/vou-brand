@@ -1,19 +1,47 @@
 import React from "react";
-import { Button, Checkbox, Form, Input, Typography, Flex } from "antd";
+import { Button, Checkbox, Form, Input, Typography, Flex, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import styles from "./LoginForm.module.css";
+import axios from "axios";
+
 const { Title } = Typography;
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
-
   const [form] = Form.useForm();
 
   const onFinishFailed = (errorInfo: unknown) => {
     console.log("Failed:", errorInfo);
   };
-  const onFinish = async (values: unknown) => {
-    console.log(values);
+  const onFinish = async (values: { email: string; password: string }) => {
+    console.log("Login attempt:", values);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/api/auth/login",
+        {
+          email: values.email,
+          password: values.password,
+        },
+      );
+
+      if (response.data.success) {
+        // Handle successful login, e.g., store token in localStorage or state
+        const token = response.data.data;
+        localStorage.setItem("authToken", token);
+        message.success("Login successful!");
+        // Navigate to the dashboard or another page
+        navigate("/dashboard");
+      } else {
+        // Handle login failure
+        message.error(
+          response.data.message || "Login failed. Please try again.",
+        );
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      message.error("An error occurred during login. Please try again.");
+    }
   };
 
   return (
