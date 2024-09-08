@@ -1,14 +1,14 @@
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import {
+  RouterProvider,
+  createBrowserRouter,
+  Navigate,
+} from "react-router-dom";
 import "./App.css";
 import DashboardLayout from "./layouts/DashboardLayout";
-import AuthLayout from "./layouts/AuthLayout";
 
 // Authentication Pages
 import LoginPage from "./pages/Login/Login";
 import RegisterPage from "./pages/SignUp/SignUp";
-
-// Dashboard Pages
-import DashboardPage from "./pages/Dashboard/DashboardPage";
 
 // Brand Management Pages
 import BrandInfoPage from "./pages/Brand/BrandInfoPage"; // Import Brand List Page
@@ -18,47 +18,54 @@ import EventListPage from "./pages/Event/EventListPage"; // Import Event List Pa
 import CreateEventPage from "./pages/Event/CreateEventPage"; // Import Create Event Page
 import EventDetailPage from "./pages/Event/EventDetailPage"; // Import Event Detail Page
 import EventUpdatePage from "./pages/Event/EventUpdatePage";
+
 // Voucher Management Pages
 import VoucherListPage from "./pages/Voucher/VoucherListPage"; // Import Voucher List Page
 import VoucherDetailPage from "./pages/Voucher/VoucherDetailPage"; // Import Voucher Detail Page
+
 // Statistics Page
 import StatisticsPage from "./pages/Statistics/StatisticsPage"; // Import the StatisticsPage component
 import SearchEventPage from "./pages/Event/SearcheventPage";
 import VerificationSuccess from "./pages/VerificationSuccess";
+import PrivateRoute from "./components/PrivateRoute";
+import AuthLayout from "./layouts/AuthLayout";
 
-// Router Configuration
+// Combine both auth and dashboard routes in a single router
 const router = createBrowserRouter([
   {
-    path: "/verification-success", // Add the route for verification success page
-    element: <VerificationSuccess />,
+    path: "/",
+    element: <Navigate to="/dashboard/events" />, // Redirect root to /dashboard
   },
   {
-    path: "/",
+    path: "/login",
     element: <AuthLayout />,
     children: [
       {
-        path: "login",
+        path: "",
         element: <LoginPage />,
-      },
-      {
-        path: "register",
-        element: <RegisterPage />,
       },
     ],
   },
   {
+    path: "/register",
+    element: <RegisterPage />,
+  },
+  {
+    path: "/verification-success",
+    element: <VerificationSuccess />,
+  },
+  {
     path: "/dashboard",
-    element: <DashboardLayout />,
+    element: (
+      <PrivateRoute>
+        <DashboardLayout />
+      </PrivateRoute>
+    ),
     children: [
       {
-        path: "",
-        element: <DashboardPage />,
-      },
-      {
-        path: "brands",
+        path: "brand",
         element: <BrandInfoPage />, // List of brands
       },
-
       {
         path: "events",
         element: <EventListPage />, // List of events
@@ -89,13 +96,13 @@ const router = createBrowserRouter([
       },
       {
         path: "events/search",
-        element: <SearchEventPage />, // Add the StatisticsPage route
+        element: <SearchEventPage />, // Add the SearchEventPage route
       },
     ],
   },
   {
     path: "*",
-    element: <div>Page not found</div>,
+    element: <div>Page not found</div>, // Handle 404s
   },
 ]);
 

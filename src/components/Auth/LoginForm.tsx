@@ -3,6 +3,8 @@ import { Button, Checkbox, Form, Input, Typography, Flex, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import styles from "./LoginForm.module.css";
 import axios from "axios";
+import { auth } from "@/config/firebaseConfig";
+import { signInWithCustomToken } from "firebase/auth"; // Import Firebase's signInWithCustomToken
 
 const { Title } = Typography;
 
@@ -13,10 +15,12 @@ const LoginForm: React.FC = () => {
   const onFinishFailed = (errorInfo: unknown) => {
     console.log("Failed:", errorInfo);
   };
+
   const onFinish = async (values: { email: string; password: string }) => {
     console.log("Login attempt:", values);
 
     try {
+      // Send a request to your backend for login and custom token generation
       const response = await axios.post(
         "http://localhost:3001/api/auth/login",
         {
@@ -26,14 +30,21 @@ const LoginForm: React.FC = () => {
       );
 
       if (response.data.success) {
-        // Handle successful login, e.g., store token in localStorage or state
-        const token = response.data.data;
-        localStorage.setItem("authToken", token);
+        const { customToken, role } = response.data.data;
+
+        if (role !== "brand") {
+          // If the user is not an admin, show an error message and do not proceed
+          message.error("Invalid credentials");
+          return; // Prevent further execution
+        }
+
+        // Use Firebase's signInWithCustomToken to sign the user in
+        await signInWithCustomToken(auth, customToken);
+
         message.success("Login successful!");
-        // Navigate to the dashboard or another page
-        navigate("/dashboard");
+        navigate("/"); // Navigate after successful login
       } else {
-        // Handle login failure
+        // Handle backend login failure
         message.error(
           response.data.message || "Login failed. Please try again.",
         );
@@ -109,7 +120,7 @@ const LoginForm: React.FC = () => {
       </Form.Item>
 
       <Form.Item>
-        <Button onClick={()=>navigate("/dashboard")}
+        <Button
           type="primary"
           htmlType="submit"
           className={`${styles["btn-style"]} justify-center"`}

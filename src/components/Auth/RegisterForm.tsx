@@ -108,10 +108,6 @@ const RegisterForm: React.FC = () => {
         />
       </Form.Item>
       <Divider className="!my-12" />
-      {/* Brand Registration Fields */}
-      <Title level={2} className="!text-left">
-        Brand information
-      </Title>
 
       <Form.Item
         label="Brand Name"
