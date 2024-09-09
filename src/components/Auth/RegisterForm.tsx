@@ -1,10 +1,10 @@
 import React from "react";
-import { Button, Form, Input, Typography, Select, Divider } from "antd";
+import { Button, Form, Input, Typography, Divider } from "antd";
 import { useNavigate } from "react-router-dom";
 import styles from "./RegisterForm.module.css";
 
 const { Title } = Typography;
-const { Option } = Select;
+// const { Option } = Select;
 
 const RegisterForm: React.FC = () => {
   const navigate = useNavigate();
@@ -108,10 +108,6 @@ const RegisterForm: React.FC = () => {
         />
       </Form.Item>
       <Divider className="!my-12" />
-      {/* Brand Registration Fields */}
-      <Title level={2} className="!text-left">
-        Brand information
-      </Title>
 
       <Form.Item
         label="Brand Name"

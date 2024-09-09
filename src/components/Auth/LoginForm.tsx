@@ -1,19 +1,58 @@
 import React from "react";
-import { Button, Checkbox, Form, Input, Typography, Flex } from "antd";
+import { Button, Checkbox, Form, Input, Typography, Flex, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import styles from "./LoginForm.module.css";
+import axios from "axios";
+import { auth } from "@/config/firebaseConfig";
+import { signInWithCustomToken } from "firebase/auth"; // Import Firebase's signInWithCustomToken
+
 const { Title } = Typography;
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
-
   const [form] = Form.useForm();
 
   const onFinishFailed = (errorInfo: unknown) => {
     console.log("Failed:", errorInfo);
   };
-  const onFinish = async (values: unknown) => {
-    console.log(values);
+
+  const onFinish = async (values: { email: string; password: string }) => {
+    console.log("Login attempt:", values);
+
+    try {
+      // Send a request to your backend for login and custom token generation
+      const response = await axios.post(
+        "http://localhost:3001/api/auth/login",
+        {
+          email: values.email,
+          password: values.password,
+        },
+      );
+
+      if (response.data.success) {
+        const { customToken, role } = response.data.data;
+
+        if (role !== "brand") {
+          // If the user is not an admin, show an error message and do not proceed
+          message.error("Invalid credentials");
+          return; // Prevent further execution
+        }
+
+        // Use Firebase's signInWithCustomToken to sign the user in
+        await signInWithCustomToken(auth, customToken);
+
+        message.success("Login successful!");
+        navigate("/"); // Navigate after successful login
+      } else {
+        // Handle backend login failure
+        message.error(
+          response.data.message || "Login failed. Please try again.",
+        );
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      message.error("An error occurred during login. Please try again.");
+    }
   };
 
   return (
@@ -81,7 +120,7 @@ const LoginForm: React.FC = () => {
       </Form.Item>
 
       <Form.Item>
-        <Button onClick={()=>navigate("/dashboard")}
+        <Button
           type="primary"
           htmlType="submit"
           className={`${styles["btn-style"]} justify-center"`}
