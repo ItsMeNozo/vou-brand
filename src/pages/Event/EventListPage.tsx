@@ -1,54 +1,69 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios'; // Import axios
 import './EventListPage.css';
-import logo from "../../assets/logo.png";
+import logo from "../../assets/logo.png"; // Placeholder or update with your image handling
+
+interface Voucher {
+    voucherId: string;
+    value: string;
+    quantity: number;
+    description: string;
+    imgUrl: string;
+    expiryDt: string;
+    remainings: number;
+   
+}
 
 interface Event {
-    id: number;
-    name: string;
-    image: string;
-    voucherQuantity: number;
-    startDate: string;
-    endDate: string;
+    eventId: string;
+    eventName: string;
+    brandName: string;
+    description: string;
+    imgUrl: string;
     gameType: string;
+    startDt: string;
+    endDt: string;
     status: string;
+    vouchers: Voucher[];
 }
 
 const EventListPage: React.FC = () => {
     const navigate = useNavigate();
+    const [events, setEvents] = useState<Event[]>([]); // To store fetched events
+    const [brandFilter, setBrandFilter] = useState<string>(''); // Initialize as an empty string
 
-    const events: Event[] = [
-        {
-            id: 1,
-            name: "Black Friday Sale",
-            image: logo,
-            voucherQuantity: 100,
-            startDate: "2024-11-25",
-            endDate: "2024-11-30",
-            gameType: "Spin the Wheel",
-            status: "Active"
-        },
-        {
-            id: 2,
-            name: "Christmas Sale",
-            image: logo,
-            voucherQuantity: 50,
-            startDate: "2024-12-20",
-            endDate: "2024-12-25",
-            gameType: "Quiz",
-            status: "Upcoming"
-        },
-        {
-            id: 3,
-            name: "New Year Sale",
-            image: logo,
-            voucherQuantity: 75,
-            startDate: "2024-12-31",
-            endDate: "2025-01-01",
-            gameType: "Treasure Hunt",
-            status: "Upcoming"
-        },
-    ];
+    useEffect(() => {
+      // Retrieve the stored user data from localStorage
+      const storedUserData = localStorage.getItem('userData');
+      
+      if (storedUserData) {
+        const userData = JSON.parse(storedUserData);
+        
+        // Extract brandName or username from the userData object
+        const brandName = userData.username; // Assuming the brand name is stored in the username field
+        
+        // Set the brandFilter state with the extracted brandName
+        setBrandFilter(brandName);
+      } else {
+        console.error('User data not found in localStorage');
+      }
+    }, []); // The effect runs only once after the component is mounted
+
+    // Fetch events using axios
+    useEffect(() => {
+        const fetchEvents = async () => {
+            try {
+                const response = await axios.get('http://localhost:8888/sale-events'); // Your API endpoint
+                const filteredEvents = response.data.filter((event: Event) => event.brandName === brandFilter);
+                setEvents(filteredEvents);
+            } catch (error) {
+                console.error('Error fetching events:', error);
+            }
+        };
+
+        fetchEvents();
+    }, [brandFilter]);
 
     const handleCreateEvent = () => {
         navigate('/dashboard/events/create');
@@ -58,7 +73,7 @@ const EventListPage: React.FC = () => {
         navigate('/dashboard/events/search');
     };
 
-    const handleEventClick = (eventId: number) => {
+    const handleEventClick = (eventId: string) => {
         navigate(`/dashboard/events/${eventId}`);
     };
 
@@ -78,7 +93,7 @@ const EventListPage: React.FC = () => {
                     <tr>
                         <th>Name</th>
                         <th>Image</th>
-                        <th>Voucher Quantity</th>
+                        
                         <th>Start Date</th>
                         <th>End Date</th>
                         <th>Game Type</th>
@@ -86,17 +101,24 @@ const EventListPage: React.FC = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {events.map(event => (
-                        <tr key={event.id} onClick={() => handleEventClick(event.id)} className="clickable-row">
-                            <td className="highlighted-name">{event.name}</td>
-                            <td><img src={event.image} alt={event.name} className="event-image" /></td>
-                            <td>{event.voucherQuantity}</td>
-                            <td>{event.startDate}</td>
-                            <td>{event.endDate}</td>
-                            <td>{event.gameType}</td>
-                            <td>{event.status}</td>
+                    {events.length > 0 ? (
+                        events.map((event) => (
+                            <tr key={event.eventId} onClick={() => handleEventClick(event.eventId)} className="clickable-row">
+                                <td className="highlighted-name">{event.eventName}</td>
+                                <td><img src={event.imgUrl} alt={event.eventName} className="event-image" /></td>
+                                
+                               
+                                <td>{new Date(event.startDt).toLocaleDateString()}</td>
+                                <td>{new Date(event.endDt).toLocaleDateString()}</td>
+                                <td>{event.gameType}</td>
+                                <td>{event.status}</td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan={8}>No events found for this brand.</td>
                         </tr>
-                    ))}
+                    )}
                 </tbody>
             </table>
         </div>

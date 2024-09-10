@@ -31,17 +31,14 @@ const Sidebar: React.FC = () => {
             <FontAwesomeIcon icon={faCalendarAlt} className="mr-5" /> Events
           </Link>
         </li>
-        <li>
-          <Link to="/dashboard/vouchers">
-            <FontAwesomeIcon icon={faTags} className="mr-5" /> Vouchers
-          </Link>
-        </li>
+        
         <li>
           <Link to="/dashboard/statistics">
             <FontAwesomeIcon icon={faChartBar} className="mr-5" /> Statistics
           </Link>
         </li>
       </ul>
+      
       <div className="logout-section">
         <button
           className="logout-button"

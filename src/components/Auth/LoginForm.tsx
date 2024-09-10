@@ -1,10 +1,10 @@
 import React from "react";
-import { Button, Checkbox, Form, Input, Typography, Flex, message } from "antd";
+import { Button, Checkbox, Form, Input, Typography, message } from "antd";
 import { useNavigate } from "react-router-dom";
-import styles from "./LoginForm.module.css";
 import axios from "axios";
 import { auth } from "@/config/firebaseConfig";
 import { signInWithCustomToken } from "firebase/auth"; // Import Firebase's signInWithCustomToken
+import styles from "./LoginForm.module.css";
 
 const { Title } = Typography;
 
@@ -30,19 +30,23 @@ const LoginForm: React.FC = () => {
       );
 
       if (response.data.success) {
-        const { customToken, role } = response.data.data;
-
+        const { customToken, uid, role } = response.data.data;
+        console.log(response.data.data);
         if (role !== "brand") {
-          // If the user is not an admin, show an error message and do not proceed
+          // If the user is not a brand, show an error message and do not proceed
           message.error("Invalid credentials");
-          return; // Prevent further execution
+          return;
         }
 
         // Use Firebase's signInWithCustomToken to sign the user in
         await signInWithCustomToken(auth, customToken);
 
+        // Store UID in local storage or state for future use
+        localStorage.setItem('uid', uid);
+
         message.success("Login successful!");
-        navigate("/"); // Navigate after successful login
+     
+        navigate(`/dashboard/events`);
       } else {
         // Handle backend login failure
         message.error(
@@ -108,15 +112,7 @@ const LoginForm: React.FC = () => {
       </Form.Item>
 
       <Form.Item name="remember" valuePropName="checked">
-        <Flex className="mt-3" justify="space-between">
-          <Checkbox>Remember me</Checkbox>
-          <span
-            style={{ fontWeight: "500", cursor: "pointer" }}
-            onClick={() => navigate("/auth/forgot-password")}
-          >
-            Forgot password ?
-          </span>
-        </Flex>
+        <Checkbox>Remember me</Checkbox>
       </Form.Item>
 
       <Form.Item>
@@ -130,15 +126,15 @@ const LoginForm: React.FC = () => {
         </Button>
       </Form.Item>
 
-      <Flex className="!mt-6" justify="center" gap="small">
-        <span className={styles[""]}>Not registered yet?</span>
+      <div className="mt-6 text-center">
+        <span>Not registered yet? </span>
         <span
           style={{ fontWeight: "600", cursor: "pointer" }}
-          onClick={() => navigate("/auth/register")}
+          onClick={() => navigate("/register")}
         >
           Create an account
         </span>
-      </Flex>
+      </div>
     </Form>
   );
 };

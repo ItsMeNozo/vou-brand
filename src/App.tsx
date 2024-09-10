@@ -20,7 +20,7 @@ import EventDetailPage from "./pages/Event/EventDetailPage"; // Import Event Det
 import EventUpdatePage from "./pages/Event/EventUpdatePage";
 
 // Voucher Management Pages
-import VoucherListPage from "./pages/Voucher/VoucherListPage"; // Import Voucher List Page
+import VoucherUpdatePage from "./pages/Voucher/VoucherUpdatePage"; // Import Voucher List Page
 import VoucherDetailPage from "./pages/Voucher/VoucherDetailPage"; // Import Voucher Detail Page
 
 // Statistics Page
@@ -29,6 +29,7 @@ import SearchEventPage from "./pages/Event/SearcheventPage";
 import VerificationSuccess from "./pages/VerificationSuccess";
 import PrivateRoute from "./components/PrivateRoute";
 import AuthLayout from "./layouts/AuthLayout";
+import CreateVoucherPage from "./pages/Voucher/CreateVoucherPage";
 
 // Combine both auth and dashboard routes in a single router
 const router = createBrowserRouter([
@@ -59,7 +60,9 @@ const router = createBrowserRouter([
     element: (
       <PrivateRoute>
         <DashboardLayout />
-      </PrivateRoute>
+        </PrivateRoute>
+        
+      
     ),
     children: [
       {
@@ -83,12 +86,12 @@ const router = createBrowserRouter([
         element: <EventUpdatePage />,
       },
       {
-        path: "vouchers",
-        element: <VoucherListPage />, // List of vouchers
+        path: "events/:eventId/vouchers/update/:voucherId",
+        element: <VoucherUpdatePage />, // List of vouchers
       },
       {
-        path: "vouchers/:voucherId",
-        element: <VoucherDetailPage />, // Voucher detail view
+        path: "events/:eventId/vouchers/create",
+        element: <CreateVoucherPage />, // List of vouchers
       },
       {
         path: "statistics",

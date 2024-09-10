@@ -1,66 +1,68 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Typography, Descriptions, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios'; // Axios for API requests
 
 const { Title } = Typography;
 
-interface Brand {
-    name: string;
-    field: string;
-    address: string;
-    gps: string;
-    status: string;
+interface User {
+  username: string;
+  fullname: string;
+  phoneNumber: string;
+  industry: string;
+  address: string;
+  status: string;
+  role: string;
+  verified: boolean;
 }
 
 const BrandInfoPage: React.FC = () => {
-    const [brand, setBrand] = useState<Brand | null>(null);
-    const navigate = useNavigate();
+  const [user, setUser] = useState<User | null>(null);
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        // Fetch the brand information from an API or data source
-        // Here we provide a placeholder for demonstration purposes
-        const fetchBrandInfo = async () => {
-            const data: Brand = {
-                name: "TIKI",
-                field: "E-Commerce",
-                address: "VN",
-                gps: "40.730610, -73.935242",
-                status: "Active"
-            };
-            setBrand(data);
-        };
+  useEffect(() => {
+    // Retrieve UID from localStorage or global context
+    const uid = localStorage.getItem('uid'); // Replace this with context if needed
 
-        fetchBrandInfo();
-    }, []);
+    if (uid) {
+      const fetchUserInfo = async () => {
+        try {
+          const response = await axios.get(`http://localhost:3001/api/user/${uid}`);
+          setUser(response.data.data); // Use 'data.data' to access the correct structure
+        } catch (error) {
+          console.error("Error fetching user info:", error);
+        }
+      };
 
-    const handleEditBrand = () => {
-        // Navigate to a page where the brand info can be edited
-        navigate('/dashboard/brand/edit');
-    };
+      fetchUserInfo();
+    } else {
+      navigate('/login'); // Redirect to login if UID is not found
+    }
+  }, [navigate]);
 
-    return (
-        <div style={{ padding: '20px', maxWidth: '800px', margin: 'auto' }}>
-            <Title level={2} style={{ textAlign: 'center' }}>Brand Information</Title>
-            {brand ? (
-                <Card>
-                    <Descriptions bordered column={1}>
-                        <Descriptions.Item label="Brand Name">{brand.name}</Descriptions.Item>
-                        <Descriptions.Item label="Field of Operation">{brand.field}</Descriptions.Item>
-                        <Descriptions.Item label="Address">{brand.address}</Descriptions.Item>
-                        <Descriptions.Item label="GPS Coordinates">{brand.gps}</Descriptions.Item>
-                        <Descriptions.Item label="Status">{brand.status}</Descriptions.Item>
-                    </Descriptions>
-                    <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                        <Button type="primary" onClick={handleEditBrand}>
-                            Edit Brand Information
-                        </Button>
-                    </div>
-                </Card>
-            ) : (
-                <p>Loading brand information...</p>
-            )}
-        </div>
-    );
+  
+  return (
+    <div style={{ padding: '20px', maxWidth: '800px', margin: 'auto' }}>
+      <Title level={2} style={{ textAlign: 'center' }}>Brand Information</Title>
+      {user ? (
+        <Card>
+          <Descriptions bordered column={1}>
+            <Descriptions.Item label="Brand Name">{user.username}</Descriptions.Item>
+            <Descriptions.Item label="Industry">
+              {user.industry || "Not provided"}
+            </Descriptions.Item>
+            <Descriptions.Item label="Address">
+              {user.address || "Not provided"}
+            </Descriptions.Item>
+            <Descriptions.Item label="Status">{user.status}</Descriptions.Item>
+          </Descriptions>
+          
+        </Card>
+      ) : (
+        <p>Loading user information...</p>
+      )}
+    </div>
+  );
 };
 
 export default BrandInfoPage;
