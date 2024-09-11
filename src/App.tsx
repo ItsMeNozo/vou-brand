@@ -49,7 +49,13 @@ const router = createBrowserRouter([
   },
   {
     path: "/register",
-    element: <RegisterPage />,
+    element: <AuthLayout />,
+    children: [
+      {
+        path: "",
+        element: <RegisterPage />,
+      },
+    ],
   },
   {
     path: "/verification-success",
